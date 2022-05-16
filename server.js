@@ -6,7 +6,7 @@ const db = require("./db/index");
 const articleRouter = require("./routes_controllers/routes/article-route");
 
 const app = express();
-const apiPort = 8080;
+const apiPort = process.env.PORT || 8080;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
