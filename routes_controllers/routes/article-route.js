@@ -19,6 +19,10 @@ const router = express.Router();
 // routes
 router.post("/article", upload.single("articleImage"), (req, res) => {
   //console.log(req.file);
+  let img = "";
+  if (req.file) {
+    img = req.file.path.replace("upload\\", "");
+  }
   const body = req.body;
   console.log("I AM HERE");
   if (!body) {
@@ -31,7 +35,7 @@ router.post("/article", upload.single("articleImage"), (req, res) => {
     title: body.title,
     text: body.text,
     rating: body.rating,
-    image: req.file.path.replace("upload\\", ""),
+    image: img,
   });
   if (!article) {
     return res.status(400).json({ success: false, error: err });
