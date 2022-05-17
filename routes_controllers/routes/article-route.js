@@ -21,7 +21,7 @@ router.post("/article", upload.single("articleImage"), (req, res) => {
   //console.log(req.file);
   let img = "";
   if (req.file) {
-    img = req.file.path.replace("upload\\", "");
+    img = req.file.path.replace("upload/", "");
   }
   const body = req.body;
   console.log("I AM HERE");
