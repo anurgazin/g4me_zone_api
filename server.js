@@ -8,9 +8,10 @@ const articleRouter = require("./routes_controllers/routes/article-route");
 const app = express();
 const apiPort = process.env.PORT || 8080;
 
+app.use(bodyParser.json());
+app.use(express.static('upload'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-app.use(bodyParser.json());
 
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
