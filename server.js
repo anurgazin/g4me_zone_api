@@ -4,12 +4,13 @@ const cors = require("cors");
 
 const db = require("./db/index");
 const articleRouter = require("./routes_controllers/routes/article-route");
+const accountRouter = require("./routes_controllers/routes/user-route");
 
 const app = express();
 const apiPort = process.env.PORT || 8080;
 
 app.use(bodyParser.json());
-app.use(express.static('upload'));
+app.use(express.static("upload"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
@@ -20,5 +21,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api", articleRouter);
+app.use("/account", accountRouter);
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));

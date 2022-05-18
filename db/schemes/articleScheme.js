@@ -15,6 +15,10 @@ var Article = new Schema({
     type: Number,
     required: true,
   },
+  date: {
+    type: Date,
+    default: Date.now(),
+  },
   image: {
     default: "",
     type: String,
