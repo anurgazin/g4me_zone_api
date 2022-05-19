@@ -36,6 +36,7 @@ router.post("/article", upload.single("articleImage"), (req, res) => {
     text: body.text,
     rating: body.rating,
     image: img,
+    date: Date.now(),
   });
   if (!article) {
     return res.status(400).json({ success: false, error: err });
