@@ -1,5 +1,5 @@
 const Account = require("../../db/schemes/accountScheme");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 createAccount = (req, res) => {
   Account.find({ email: req.body.email })
