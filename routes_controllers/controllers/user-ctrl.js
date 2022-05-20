@@ -1,5 +1,7 @@
 const Account = require("../../db/schemes/accountScheme");
 const bcrypt = require("bcryptjs");
+const dotenv = require("dotenv").config();
+const jsonwebtoken = require("jsonwebtoken");
 
 createAccount = (req, res) => {
   Account.find({ email: req.body.email })
@@ -42,6 +44,46 @@ createAccount = (req, res) => {
     });
 };
 
+loginAccount = (req, res) => {
+  console.log(req.body)
+  Account.find({ email: req.body.email })
+    .exec()
+    .then((user) => {
+      if (user.length < 1) {
+        console.log("I am here")
+        return res.status(400).json({
+          message: "e-mail is not found",
+        });
+      } else {
+        bcrypt.compare(req.body.password, user[0].password, (err, result) => {
+          if (!result) {
+            return res.status(401).json({
+              message: "auth failed",
+            });
+          } else {
+            const token = jsonwebtoken.sign(
+              {
+                user: user[0]
+              },
+              process.env.JWT_SECRET,
+              {
+                expiresIn: "1h",
+              }
+            );
+            return res.status(200).json({
+              message: "auth completed",
+              token: token,
+            });
+          }
+        });
+      }
+    })
+    .catch((err) => {
+      console.log("I AM HERE")
+    });
+};
+
 module.exports = {
   createAccount,
+  loginAccount,
 };
