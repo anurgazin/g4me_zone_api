@@ -30,6 +30,7 @@ createAccount = (req, res) => {
                 console.log(result);
                 res.status(201).json({
                   message: "Account successfully created",
+                  data: result,
                 });
               })
               .catch((err) => {
@@ -45,12 +46,12 @@ createAccount = (req, res) => {
 };
 
 loginAccount = (req, res) => {
-  console.log(req.body)
+  console.log(req.body);
   Account.find({ email: req.body.email })
     .exec()
     .then((user) => {
       if (user.length < 1) {
-        console.log("I am here")
+        console.log("I am here");
         return res.status(400).json({
           message: "e-mail is not found",
         });
@@ -63,7 +64,7 @@ loginAccount = (req, res) => {
           } else {
             const token = jsonwebtoken.sign(
               {
-                user: user[0]
+                user: user[0],
               },
               process.env.JWT_SECRET,
               {
@@ -79,7 +80,7 @@ loginAccount = (req, res) => {
       }
     })
     .catch((err) => {
-      console.log("I AM HERE")
+      console.log("I AM HERE");
     });
 };
 

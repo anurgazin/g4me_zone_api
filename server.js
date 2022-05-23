@@ -5,6 +5,7 @@ const cors = require("cors");
 const db = require("./db/index");
 const articleRouter = require("./routes_controllers/routes/article-route");
 const accountRouter = require("./routes_controllers/routes/user-route");
+const commentRouter = require("./routes_controllers/routes/comment-route");
 
 const app = express();
 const apiPort = process.env.PORT || 8080;
@@ -20,7 +21,8 @@ app.get("/", (req, res) => {
   res.send("Hello, user!");
 });
 
-app.use("/api", articleRouter);
+app.use("/api", articleRouter, commentRouter);
 app.use("/account", accountRouter);
+// app.use("/comment");
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));
