@@ -14,6 +14,5 @@ getComments = async (req, res) => {
 };
 
 module.exports = {
-  // createArticle,
   getComments,
 };

@@ -26,3 +26,5 @@ app.use("/account", accountRouter);
 // app.use("/comment");
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));
+
+module.exports = app;

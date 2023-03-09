@@ -18,7 +18,6 @@ const upload = multer({ storage: storage });
 const router = express.Router();
 // routes
 router.post("/article", upload.single("articleImage"), (req, res) => {
-  //console.log(req.file);
   let img = "";
   if (req.file) {
     img = req.file.path.replace("upload/", "");
