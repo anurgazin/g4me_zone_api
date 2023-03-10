@@ -1,4 +1,63 @@
+const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
+const { storage } = require("../../db/index");
 const Article = require("../../db/schemes/articleScheme");
+
+const addArticle = async (req, res) => {
+  try {
+    let img = "";
+    if (req.file) {
+      img = req.file;
+    }
+    const body = req.body;
+    console.log("I AM HERE");
+    if (!body) {
+      return res.status(400).json({
+        success: false,
+        error: "You must provide an article",
+      });
+    }
+
+    const timestamp = Date.now();
+    const name = img.originalname.split(".")[0];
+    const type = img.originalname.split(".")[1];
+    const fileName = `${name}_${timestamp}.${type}`;
+
+    const metatype = { contentType: img.mimetype, name: img.originalname };
+    const storageRef = ref(storage, `images/${fileName}`);
+
+    const uploadImg = await uploadBytes(storageRef, img.buffer, metatype);
+    const img_url = await getDownloadURL(uploadImg.ref);
+
+    const article = new Article({
+      title: body.title,
+      text: body.text,
+      rating: body.rating,
+      image: img_url,
+      date: Date.now(),
+    });
+    if (!article) {
+      return res.status(400).json({ success: false, error: err });
+    }
+
+    article
+      .save()
+      .then(() => {
+        return res.status(201).json({
+          success: true,
+          id: article._id,
+          message: "Article created!",
+        });
+      })
+      .catch((error) => {
+        return res.status(400).json({
+          error,
+          message: "Article is not created!",
+        });
+      });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 getArticleById = async (req, res) => {
   await Article.findOne({ _id: req.params.id })
@@ -31,6 +90,7 @@ getArticles = async (req, res) => {
 };
 
 module.exports = {
+  addArticle,
   getArticleById,
   getArticles,
 };

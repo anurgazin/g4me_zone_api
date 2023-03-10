@@ -1,6 +1,6 @@
+require("dotenv").config();
 const Account = require("../../db/schemes/accountScheme");
 const bcrypt = require("bcryptjs");
-const dotenv = require("dotenv").config();
 const jsonwebtoken = require("jsonwebtoken");
 
 createAccount = (req, res) => {
