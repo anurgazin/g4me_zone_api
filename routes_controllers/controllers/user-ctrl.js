@@ -46,12 +46,10 @@ createAccount = (req, res) => {
 };
 
 loginAccount = (req, res) => {
-  console.log(req.body);
   Account.find({ email: req.body.email })
     .exec()
     .then((user) => {
       if (user.length < 1) {
-        console.log("I am here");
         return res.status(400).json({
           message: "e-mail is not found",
         });
@@ -80,7 +78,7 @@ loginAccount = (req, res) => {
       }
     })
     .catch((err) => {
-      console.log("I AM HERE");
+      console.log(err);
     });
 };
 

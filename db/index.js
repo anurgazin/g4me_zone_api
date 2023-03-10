@@ -6,8 +6,6 @@ const connectionString = config.connectionString;
 
 mongoose.connect(connectionString);
 
-console.log(config.firebaseConfig.apiKey)
-
 const db = mongoose.connection.on("open", () => {
   console.log("Database connection open.");
 });

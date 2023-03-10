@@ -9,7 +9,6 @@ const addArticle = async (req, res) => {
       img = req.file;
     }
     const body = req.body;
-    console.log("I AM HERE");
     if (!body) {
       return res.status(400).json({
         success: false,
