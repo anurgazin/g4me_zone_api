@@ -50,6 +50,7 @@ loginAccount = (req, res) => {
     .exec()
     .then((user) => {
       if (user.length < 1) {
+        console.log(req.body)
         return res.status(400).json({
           message: "e-mail is not found",
         });
@@ -62,13 +63,16 @@ loginAccount = (req, res) => {
           } else {
             const token = jsonwebtoken.sign(
               {
-                user: user[0],
+                id: user[0]._id,
+                email: user[0].email,
+                isAdmin: user[0].isAdmin
               },
               process.env.JWT_SECRET,
               {
                 expiresIn: "1h",
               }
             );
+            console.log(user[0])
             return res.status(200).json({
               message: "auth completed",
               token: token,

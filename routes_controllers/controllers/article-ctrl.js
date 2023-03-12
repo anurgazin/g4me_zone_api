@@ -27,8 +27,6 @@ const addArticle = async (req, res) => {
     const uploadImg = await uploadBytes(storageRef, img.buffer, metatype);
     const img_url = await getDownloadURL(uploadImg.ref);
 
-    console.log(req.body)
-
     const article = new Article({
       title: body.title,
       text: body.text,
@@ -58,7 +56,10 @@ const addArticle = async (req, res) => {
         });
       });
   } catch (error) {
-    console.log(error);
+    return res.status(400).json({
+      error,
+      message: "Article is not created!",
+    });
   }
 };
 

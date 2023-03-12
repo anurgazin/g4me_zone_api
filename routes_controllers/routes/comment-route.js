@@ -1,16 +1,14 @@
 const express = require("express");
 
+const { authJwt } = require("../../middleware");
 const CommentController = require("../controllers/comment-ctrl");
 const Comment = require("../../db/schemes/commentScheme");
 
 const router = express.Router();
 // routes
-router.post("/comment", (req, res) => {
-  //console.log(req.file);
+router.post("/comment", [authJwt.verifyToken], (req, res) => {
   const body = req.body;
-  console.log("I AM HERE / Comment Route(POST /comment)");
   if (!body) {
-    console.log("You must provide a comment");
     return res.status(400).json({
       success: false,
       error: "You must provide a comment",
