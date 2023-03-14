@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require("express");
 const bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser');
 const cors = require("cors");
 
 const { db } = require("./db/index");
@@ -14,6 +15,7 @@ const apiPort = process.env.PORT || 8080;
 app.use(bodyParser.json());
 app.use(express.static("upload"));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser())
 app.use(cors());
 
 db.on("error", console.error.bind(console, "MongoDB connection error:"));

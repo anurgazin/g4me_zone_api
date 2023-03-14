@@ -63,7 +63,7 @@ const addArticle = async (req, res) => {
   }
 };
 
-getArticleById = async (req, res) => {
+const getArticleById = async (req, res) => {
   await Article.findOne({ _id: req.params.id })
     .then((art) => {
       if (!art) {
@@ -78,7 +78,7 @@ getArticleById = async (req, res) => {
     });
 };
 
-getArticles = async (req, res) => {
+const getArticles = async (req, res) => {
   await Article.find({})
     .then((articles) => {
       if (!articles.length) {

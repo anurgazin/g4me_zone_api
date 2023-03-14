@@ -1,9 +1,10 @@
 require("dotenv").config();
 const Account = require("../../db/schemes/accountScheme");
 const bcrypt = require("bcryptjs");
+const { authJwt } = require("../../middleware");
 const jsonwebtoken = require("jsonwebtoken");
 
-createAccount = (req, res) => {
+const createAccount = (req, res) => {
   Account.find({ email: req.body.email })
     .exec()
     .then((user) => {
@@ -20,17 +21,23 @@ createAccount = (req, res) => {
               error: err,
             });
           } else {
+            if (!req.body.nickname) {
+              req.body.nickname = req.body.email.split("@")[0];
+            }
             const account = new Account({
               email: req.body.email,
+              nickname: req.body.nickname,
               password: hash,
             });
             account
               .save()
               .then((result) => {
                 console.log(result);
+                const { token, refresh_token } = authJwt.generateToken(result);
+                res.cookie("refresh_token", refresh_token, { httpOnly: true });
                 res.status(201).json({
                   message: "Account successfully created",
-                  data: result,
+                  token: token,
                 });
               })
               .catch((err) => {
@@ -45,34 +52,26 @@ createAccount = (req, res) => {
     });
 };
 
-loginAccount = (req, res) => {
+const loginAccount = (req, res) => {
   Account.find({ email: req.body.email })
     .exec()
     .then((user) => {
       if (user.length < 1) {
-        console.log(req.body)
+        console.log(req.body);
         return res.status(400).json({
           message: "e-mail is not found",
         });
       } else {
         bcrypt.compare(req.body.password, user[0].password, (err, result) => {
           if (!result) {
+            console.log(err);
             return res.status(401).json({
               message: "auth failed",
             });
           } else {
-            const token = jsonwebtoken.sign(
-              {
-                id: user[0]._id,
-                email: user[0].email,
-                isAdmin: user[0].isAdmin
-              },
-              process.env.JWT_SECRET,
-              {
-                expiresIn: "1h",
-              }
-            );
-            console.log(user[0])
+            const { token, refresh_token } = authJwt.generateToken(user[0]);
+            console.log(user[0]);
+            res.cookie("refresh_token", refresh_token, { httpOnly: true });
             return res.status(200).json({
               message: "auth completed",
               token: token,
@@ -86,7 +85,20 @@ loginAccount = (req, res) => {
     });
 };
 
+// const refreshToken = (req, res) => {
+//   if (!req.user.id) {
+//     return res.status(401).send("Error occurred");
+//   }
+//   const { token, refresh_token } = authJwt.generateToken(req.user);
+//   res.cookie("refresh_token", refresh_token, { httpOnly: true });
+//   return res.status(200).json({
+//     message: "token refreshed successfully",
+//     token: token,
+//   });
+// };
+
 module.exports = {
   createAccount,
   loginAccount,
+  // refreshToken,
 };
