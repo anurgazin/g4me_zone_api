@@ -15,8 +15,6 @@ const createAccount = (req, res) => {
       } else {
         bcrypt.hash(req.body.password, 10, (err, hash) => {
           if (err) {
-            console.log(req.body);
-            console.log(req.body.password);
             return res.status(500).json({
               error: err,
             });
@@ -32,7 +30,6 @@ const createAccount = (req, res) => {
             account
               .save()
               .then((result) => {
-                console.log(result);
                 const { token, refresh_token } = authJwt.generateToken(result);
                 res.cookie("refresh_token", refresh_token, { httpOnly: true });
                 res.status(201).json({
@@ -41,7 +38,6 @@ const createAccount = (req, res) => {
                 });
               })
               .catch((err) => {
-                console.log(err);
                 res.status(500).json({
                   error: err,
                 });
@@ -57,20 +53,17 @@ const loginAccount = (req, res) => {
     .exec()
     .then((user) => {
       if (user.length < 1) {
-        console.log(req.body);
         return res.status(400).json({
           message: "e-mail is not found",
         });
       } else {
         bcrypt.compare(req.body.password, user[0].password, (err, result) => {
           if (!result) {
-            console.log(err);
             return res.status(401).json({
               message: "auth failed",
             });
           } else {
             const { token, refresh_token } = authJwt.generateToken(user[0]);
-            console.log(user[0]);
             res.cookie("refresh_token", refresh_token, { httpOnly: true });
             return res.status(200).json({
               message: "auth completed",
