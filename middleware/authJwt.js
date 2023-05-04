@@ -1,6 +1,7 @@
-const jwt = require("jsonwebtoken");
+//import { sign, verify } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
-const Account = require("../db/schemes/accountScheme");
+import Account from "../db/schemes/accountScheme.js";
 
 const generateToken = (user) => {
   const token = jwt.sign(
@@ -38,7 +39,6 @@ const verifyToken = (req, res, next) => {
       console.log("verifyToken error: " + err);
       return res.status(401).send({ message: "unauthorized" });
     }
-    console.log("verifytoken: " + decoded.nickname);
     req.user = {
       nickname: decoded.nickname,
       id: decoded.id,
@@ -88,4 +88,4 @@ const authJwt = {
   generateToken,
 };
 
-module.exports = authJwt;
+export default authJwt;

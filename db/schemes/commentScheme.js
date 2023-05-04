@@ -1,6 +1,8 @@
-var mongoose = require("mongoose");
+import mongoose from "mongoose";
 var Schema = mongoose.Schema;
-mongoose.Promise = require("bluebird");
+import bluebird from "bluebird";
+mongoose.Promise = bluebird;
+
 
 var Comment = new Schema({
   article: {
@@ -21,4 +23,4 @@ var Comment = new Schema({
   },
 });
 
-module.exports = mongoose.model("comments", Comment, "Comments");
+export default mongoose.model("comments", Comment, "Comments");

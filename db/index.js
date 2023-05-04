@@ -1,18 +1,15 @@
-const mongoose = require("mongoose");
-const { initializeApp } = require("firebase/app");
-const { getStorage } = require("firebase/storage");
-const config = require("./config/config");
-const connectionString = config.connectionString;
+import mongoose from "mongoose";
+import { initializeApp } from "firebase/app";
+import { getStorage } from "firebase/storage";
+import { firebaseConfig, connectionString } from "./config/config.js";
 
 mongoose.connect(connectionString);
 
-const db = mongoose.connection.on("open", () => {
+export const db = mongoose.connection.on("open", () => {
   console.log("Database connection open.");
 });
 
-const firebase_db = initializeApp(config.firebaseConfig);
+const firebase_db = initializeApp(firebaseConfig);
 
+export const storage = getStorage(firebase_db);
 
-const storage = getStorage(firebase_db);
-
-module.exports = { db, storage };

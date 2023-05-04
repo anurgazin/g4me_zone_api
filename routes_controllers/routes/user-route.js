@@ -1,14 +1,14 @@
-const express = require("express");
+import { Router } from "express";
 
-const AccountController = require("../controllers/user-ctrl");
+import { createAccount, loginAccount } from "../controllers/user-ctrl.js";
 //const {authJwt} = require("../../middleware")
 
-const router = express.Router();
+const router = Router();
 
-router.post("/create-account", AccountController.createAccount);
+router.post("/create-account", createAccount);
 
-router.post("/login", AccountController.loginAccount);
+router.post("/login", loginAccount);
 
 // router.post("/refresh-token",[authJwt.verifyRefreshToken], AccountController.refreshToken)
 
-module.exports = router;
+export default router;

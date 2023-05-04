@@ -1,17 +1,31 @@
-const express = require("express");
+import express from "express";
 
-const ArticleController = require("../controllers/article-ctrl");
-const { authJwt } = require("../../middleware");
-const multer = require("multer");
-
+import { addArticle, approveArticle, deleteArticle, getArticleById, getArticles } from "../controllers/article-ctrl.js";
+import authJwt from "../../middleware/authJwt.js";
+import multer from "multer";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage }).single("articleImage");
 
 const router = express.Router();
 // routes
-router.post("/article", [authJwt.verifyToken, authJwt.isAdmin],upload, ArticleController.addArticle)
-router.get("/article/:id", ArticleController.getArticleById);
-router.get("/articles", ArticleController.getArticles);
+router.post(
+  "/article",
+  [authJwt.verifyToken, authJwt.isAdmin],
+  upload,
+  addArticle
+);
+router.put(
+  "/article/approve/:id",
+  [authJwt.verifyToken, authJwt.isAdmin],
+  approveArticle
+);
+router.delete(
+  "/article/approve/:id",
+  [authJwt.verifyToken, authJwt.isAdmin],
+  deleteArticle
+);
+router.get("/article/:id", getArticleById);
+router.get("/articles", getArticles);
 
-module.exports = router;
+export default router;

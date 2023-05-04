@@ -1,10 +1,9 @@
-require("dotenv").config();
-const Account = require("../../db/schemes/accountScheme");
-const bcrypt = require("bcryptjs");
-const { authJwt } = require("../../middleware");
-const jsonwebtoken = require("jsonwebtoken");
+import "dotenv/config.js";
+import Account from "../../db/schemes/accountScheme.js";
+import bcrypt from "bcryptjs";
+import authJwt from "../../middleware/authJwt.js";
 
-const createAccount = (req, res) => {
+export const createAccount = (req, res) => {
   Account.find({ email: req.body.email })
     .exec()
     .then((user) => {
@@ -48,7 +47,7 @@ const createAccount = (req, res) => {
     });
 };
 
-const loginAccount = (req, res) => {
+export const loginAccount = (req, res) => {
   Account.find({ email: req.body.email })
     .exec()
     .then((user) => {
@@ -90,8 +89,3 @@ const loginAccount = (req, res) => {
 //   });
 // };
 
-module.exports = {
-  createAccount,
-  loginAccount,
-  // refreshToken,
-};

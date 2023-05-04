@@ -1,13 +1,13 @@
-require('dotenv').config()
-const express = require("express");
-const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser');
-const cors = require("cors");
+import "dotenv/config.js";
+import express from "express";
+import bodyParser from "body-parser";
+import cookieParser from 'cookie-parser';
+import cors from "cors";
 
-const { db } = require("./db/index");
-const articleRouter = require("./routes_controllers/routes/article-route");
-const accountRouter = require("./routes_controllers/routes/user-route");
-const commentRouter = require("./routes_controllers/routes/comment-route");
+import {db} from "./db/index.js";
+import articleRouter from "./routes_controllers/routes/article-route.js";
+import accountRouter from "./routes_controllers/routes/user-route.js";
+import commentRouter from "./routes_controllers/routes/comment-route.js";
 
 const app = express();
 const apiPort = process.env.PORT || 8080;
@@ -30,4 +30,4 @@ app.use("/account", accountRouter);
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));
 
-module.exports = app;
+export default app;

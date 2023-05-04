@@ -1,6 +1,6 @@
-const Comment = require("../../db/schemes/commentScheme");
+import Comment from "../../db/schemes/commentScheme.js";
 
-getComments = async (req, res) => {
+export const getComments = async (req, res) => {
   await Comment.find({ article: req.params.articleId })
     .then((comments) => {
       if (!comments.length) {
@@ -13,6 +13,3 @@ getComments = async (req, res) => {
     });
 };
 
-module.exports = {
-  getComments,
-};

@@ -1,8 +1,13 @@
-const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
-const { storage } = require("../../db/index");
-const Article = require("../../db/schemes/articleScheme");
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
+import { storage } from "../../db/index.js";
+import Article from "../../db/schemes/articleScheme.js";
 
-const addArticle = async (req, res) => {
+export const addArticle = async (req, res) => {
   try {
     let img = "";
     if (req.file) {
@@ -15,7 +20,6 @@ const addArticle = async (req, res) => {
         error: "You must provide an article",
       });
     }
-
     const timestamp = Date.now();
     const name = img.originalname.split(".")[0];
     const type = img.originalname.split(".")[1];
@@ -34,6 +38,7 @@ const addArticle = async (req, res) => {
       genre: body.genre,
       release_date: body.release,
       image: img_url,
+      author: req.user.nickname,
       date: Date.now(),
     });
     if (!article) {
@@ -63,7 +68,7 @@ const addArticle = async (req, res) => {
   }
 };
 
-const getArticleById = async (req, res) => {
+export const getArticleById = async (req, res) => {
   await Article.findOne({ _id: req.params.id })
     .then((art) => {
       if (!art) {
@@ -78,7 +83,52 @@ const getArticleById = async (req, res) => {
     });
 };
 
-const getArticles = async (req, res) => {
+export const approveArticle = async (req, res) => {
+  await Article.updateOne({ _id: req.params.id }, { $set: { approved: true } })
+    .then((article) => {
+      if (!article) {
+        return res
+          .status(404)
+          .json({ success: false, error: "Article is not found" });
+      }
+      return res.status(200).json({ success: true, data: article });
+    })
+    .catch((err) => {
+      return res.status(400).json({ success: false, error: err });
+    });
+};
+
+export const deleteArticle = async (req, res) => {
+  await Article.findOne({ _id: req.params.id }).then((article) => {
+    if (!article) {
+      return res
+        .status(404)
+        .json({ success: false, error: "Article is not found" });
+    }
+    const url_token = article.image.split('?');
+    const url = url_token[0].split('/');
+    const path = url[url.length - 1].replaceAll("%2F", "/");
+    const imgRef = ref(storage, path);
+    deleteObject(imgRef)
+      .then(() => {
+        console.log("Image deleted successfully");
+      })
+      .catch((error) => {
+        console.log("Something went wrong: " + error)
+      });
+  });
+  await Article.deleteOne({ _id: req.params.id })
+    .then(() => {
+      return res
+        .status(200)
+        .json({ success: true, message: "Successfully Deleted" });
+    })
+    .catch((err) => {
+      return res.status(400).json({ success: false, error: err });
+    });
+};
+
+export const getArticles = async (req, res) => {
   await Article.find({})
     .then((articles) => {
       if (!articles.length) {
@@ -91,10 +141,4 @@ const getArticles = async (req, res) => {
     .catch((err) => {
       return res.status(400).json({ success: false, error: err });
     });
-};
-
-module.exports = {
-  addArticle,
-  getArticleById,
-  getArticles,
 };

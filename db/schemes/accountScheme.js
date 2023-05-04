@@ -1,6 +1,7 @@
-var mongoose = require("mongoose");
+import mongoose from "mongoose";
 var Schema = mongoose.Schema;
-mongoose.Promise = require("bluebird");
+import bluebird from "bluebird";
+mongoose.Promise = bluebird;
 
 var Account = new Schema({
   email: {
@@ -23,4 +24,4 @@ var Account = new Schema({
   },
 });
 
-module.exports = mongoose.model("accounts", Account, "Accounts");
+export default mongoose.model("accounts", Account, "Accounts");

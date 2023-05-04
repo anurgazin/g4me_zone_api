@@ -1,6 +1,8 @@
-var mongoose = require("mongoose");
+import mongoose from "mongoose";
 var Schema = mongoose.Schema;
-mongoose.Promise = require("bluebird");
+import bluebird from "bluebird";
+mongoose.Promise = bluebird;
+
 
 var Article = new Schema(
   {
@@ -32,7 +34,14 @@ var Article = new Schema(
       type: Date,
       required: true
     },
+    author:{
+      type: String
+    },
+    approved:{
+      type: Boolean,
+      default: false
+    }
   }
 );
 
-module.exports = mongoose.model("articles", Article, "Articles");
+export default mongoose.model("articles", Article, "Articles");
