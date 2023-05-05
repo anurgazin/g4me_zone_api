@@ -105,8 +105,8 @@ export const deleteArticle = async (req, res) => {
         .status(404)
         .json({ success: false, error: "Article is not found" });
     }
-    const url_token = article.image.split('?');
-    const url = url_token[0].split('/');
+    const url_token = article.image.split("?");
+    const url = url_token[0].split("/");
     const path = url[url.length - 1].replaceAll("%2F", "/");
     const imgRef = ref(storage, path);
     deleteObject(imgRef)
@@ -114,7 +114,7 @@ export const deleteArticle = async (req, res) => {
         console.log("Image deleted successfully");
       })
       .catch((error) => {
-        console.log("Something went wrong: " + error)
+        console.log("Something went wrong: " + error);
       });
   });
   await Article.deleteOne({ _id: req.params.id })

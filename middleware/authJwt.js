@@ -1,4 +1,3 @@
-//import { sign, verify } from "jsonwebtoken";
 import jwt from "jsonwebtoken";
 
 import Account from "../db/schemes/accountScheme.js";
@@ -9,6 +8,7 @@ const generateToken = (user) => {
       id: user._id,
       nickname: user.nickname,
       isAdmin: user.isAdmin,
+      role: user.role,
     },
     process.env.JWT_SECRET,
     {
@@ -20,6 +20,7 @@ const generateToken = (user) => {
       id: user._id,
       nickname: user.nickname,
       isAdmin: user.isAdmin,
+      role: user.role,
     },
     process.env.JWT_SECRET,
     {
@@ -43,6 +44,7 @@ const verifyToken = (req, res, next) => {
       nickname: decoded.nickname,
       id: decoded.id,
       isAdmin: decoded.isAdmin,
+      role: decoded.role,
     };
     next();
   });
@@ -58,34 +60,25 @@ const isAdmin = (req, res, next) => {
     next();
   });
 };
-
-// const verifyRefreshToken = (req, res, next) => {
-//   const refresh_token = req.cookies.refresh_token;
-//   if (!refresh_token) {
-//     return res.status(403).send({ message: "Refresh Token is not provided" });
-//   }
-//   jwt.verify(refresh_token, process.env.JWT_SECRET, (err, decoded) => {
-//     if (err) {
-//       console.log("verifyRefreshToken error: " + err);
-//       return res
-//         .status(401)
-//         .send({ message: "invalid refresh token is provided" });
-//     }
-//     req.user = {
-//       nickname: decoded.nickname,
-//       id: decoded.id,
-//       isAdmin: decoded.isAdmin,
-//     };
-//     console.log("verifyRefresh token is called")
-//     next();
-//   });
-// };
+const accessToWrite = (req, res, next) => {
+  Account.findById(req.user.id).exec((err, user) => {
+    if (err) {
+      return res.status(500).send({ message: err });
+    }
+    if (user.role !== "Author" && user.role !== "Admin") {
+      return res
+        .status(403)
+        .send({ message: "Requires role of Author or Admin" });
+    }
+    next();
+  });
+};
 
 const authJwt = {
   verifyToken,
-  // verifyRefreshToken,
   isAdmin,
   generateToken,
+  accessToWrite,
 };
 
 export default authJwt;

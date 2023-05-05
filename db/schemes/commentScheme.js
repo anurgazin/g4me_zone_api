@@ -3,7 +3,6 @@ var Schema = mongoose.Schema;
 import bluebird from "bluebird";
 mongoose.Promise = bluebird;
 
-
 var Comment = new Schema({
   article: {
     type: String,

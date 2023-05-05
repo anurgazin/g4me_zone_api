@@ -7,7 +7,7 @@ var Account = new Schema({
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   nickname: {
     type: String,
@@ -21,6 +21,10 @@ var Account = new Schema({
   isAdmin: {
     type: Boolean,
     default: false,
+  },
+  role: {
+    type: String,
+    default: "Guest",
   },
 });
 

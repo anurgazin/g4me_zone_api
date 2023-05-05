@@ -26,7 +26,6 @@ app.get("/", (req, res) => {
 
 app.use("/api", articleRouter, commentRouter);
 app.use("/account", accountRouter);
-// app.use("/comment");
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));
 

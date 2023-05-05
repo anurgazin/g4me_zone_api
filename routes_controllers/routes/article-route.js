@@ -1,6 +1,12 @@
 import express from "express";
 
-import { addArticle, approveArticle, deleteArticle, getArticleById, getArticles } from "../controllers/article-ctrl.js";
+import {
+  addArticle,
+  approveArticle,
+  deleteArticle,
+  getArticleById,
+  getArticles,
+} from "../controllers/article-ctrl.js";
 import authJwt from "../../middleware/authJwt.js";
 import multer from "multer";
 
@@ -11,7 +17,7 @@ const router = express.Router();
 // routes
 router.post(
   "/article",
-  [authJwt.verifyToken, authJwt.isAdmin],
+  [authJwt.verifyToken, authJwt.accessToWrite],
   upload,
   addArticle
 );

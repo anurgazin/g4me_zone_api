@@ -1,5 +1,7 @@
 import "dotenv/config.js";
 import Account from "../../db/schemes/accountScheme.js";
+import Comment from "../../db/schemes/commentScheme.js";
+import Article from "../../db/schemes/articleScheme.js";
 import bcrypt from "bcryptjs";
 import authJwt from "../../middleware/authJwt.js";
 
@@ -77,15 +79,59 @@ export const loginAccount = (req, res) => {
     });
 };
 
-// const refreshToken = (req, res) => {
-//   if (!req.user.id) {
-//     return res.status(401).send("Error occurred");
-//   }
-//   const { token, refresh_token } = authJwt.generateToken(req.user);
-//   res.cookie("refresh_token", refresh_token, { httpOnly: true });
-//   return res.status(200).json({
-//     message: "token refreshed successfully",
-//     token: token,
-//   });
-// };
-
+export const changeUsername = (req, res) => {
+  Account.find({ nickname: req.body.username })
+    .exec()
+    .then((user) => {
+      if (user.length > 0) {
+        return res.status(409).json({ message: "Username is occupied" });
+      } else {
+        console.log("Old username: " + req.user.nickname);
+        console.log("New username: " + req.body.username);
+        Article.updateMany(
+          { author: req.user.nickname },
+          { $set: { author: req.body.username } }
+        )
+          .then((result) => {
+            if (result.acknowledged === false) {
+              console.log("Something went wrong!");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        Comment.updateMany(
+          { author: req.user.nickname },
+          { $set: { author: req.body.username } }
+        )
+          .then((result) => {
+            if (result.acknowledged === false) {
+              console.log("Something went wrong!");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        Account.updateOne(
+          { _id: req.user.id },
+          { $set: { nickname: req.body.username } }
+        )
+          .then((result) => {
+            if (result.acknowledged === false) {
+              return res.status(406).json({
+                message: error,
+              });
+            }
+            return res.status(200).json({
+              message: "Username is changed",
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+            return res.status(408).json({
+              message: error,
+            });
+          });
+      }
+    });
+};
