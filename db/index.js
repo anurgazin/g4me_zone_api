@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 import { firebaseConfig, connectionString } from "./config/config.js";
 
+mongoose.set("strictQuery", false);
 mongoose.connect(connectionString);
 
 export const db = mongoose.connection.on("open", () => {
