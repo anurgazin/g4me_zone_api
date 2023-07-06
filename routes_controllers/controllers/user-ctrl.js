@@ -86,8 +86,6 @@ export const changeUsername = (req, res) => {
       if (user.length > 0) {
         return res.status(409).json({ message: "Username is occupied" });
       } else {
-        console.log("Old username: " + req.user.nickname);
-        console.log("New username: " + req.body.username);
         Article.updateMany(
           { author: req.user.nickname },
           { $set: { author: req.body.username } }
